@@ -1,0 +1,79 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(dirname "$0")
+TERMINAL_DIR=$(dirname .)
+
+if [[ $(/usr/bin/id -u) -eq 0 ]]; then
+    echo "WARNING: SCRIPT IS RUNNING AS SUDO, THIS IS NOT NECESSARY"
+    HOME_DIR=$(eval echo ~$SUDO_USER)
+else
+    HOME_DIR=$(eval echo ~)
+fi
+
+INSTALL_DIR="$HOME_DIR/dsp-board-sdk"
+
+function atexit()
+{
+    cd $TERMINAL_DIR
+}
+
+trap atexit EXIT
+
+echo "Installing DSPBoard SDK at $INSTALL_DIR"
+echo ''
+
+mkdir -p $INSTALL_DIR
+
+PAYLOAD_LINE=$(awk '/^exit 0/ { print NR + 1; exit 0; }' $0)
+
+# Decompress SDK files
+tail -n +${PAYLOAD_LINE} $0 | tar -xvj -C $INSTALL_DIR
+
+if [[ $(/usr/bin/id -u) -eq 0 ]]; then
+    chown $SUDO_USER:$SUDO_USER $INSTALL_DIR
+    chown root:root $INSTALL_DIR/vscode/chrome-sandbox
+    chmod 4755 $INSTALL_DIR/vscode/chrome-sandbox
+    DESKTOPARGS=""
+else
+    DESKTOPARGS="--no-sandbox"
+fi
+
+# Create VSCode desktop shortcut
+DESKTOPEXEC="Exec=$INSTALL_DIR/vscode/code %F $DESKTOPARGS"
+DESKTOPICON="Icon=$INSTALL_DIR/vscode/resources/app/resources/linux/code.png"
+
+#Modify VSCode settings
+sed -i "s+SDK_PATH_TO_REMPLACE+$INSTALL_DIR+g" "$INSTALL_DIR/vscode/data/user-data/User/settings.json"
+
+cp -f "$INSTALL_DIR/vscode/dsp-board-ide.desktop" "$HOME_DIR/.local/share/applications/dsp-board-ide.desktop"
+
+echo $DESKTOPEXEC >> "$HOME_DIR/.local/share/applications/dsp-board-ide.desktop"
+echo $DESKTOPICON >> "$HOME_DIR/.local/share/applications/dsp-board-ide.desktop"
+
+chmod +x "$HOME_DIR/.local/share/applications/dsp-board-ide.desktop"
+
+# Install openocd
+echo "Do you want install OpenOCD 12.0? (This REQUIRES sudo) [y/N]"
+read -e INSTALL_OPENOCD
+echo ''
+
+if [ $INSTALL_OPENOCD == "y" ] || [ $INSTALL_OPENOCD == "Y" ]; then
+    cd "$INSTALL_DIR/utils/openocd"
+    sudo make install
+elif [ $INSTALL_OPENOCD == "n" ] || [ $INSTALL_OPENOCD == "N" ]; then
+    echo "OpenOCD will not install"
+else
+    echo "WARNING: By default OPENOCD will not install."
+fi
+
+#Generate uninstaller
+readarray -t UNINSTALLER_TEMPLATE < "$INSTALL_DIR/uninstaller_linux_x64.template"
+UNINSTALLER_TEMPLATE[6]="INSTALL_DIR=$INSTALL_DIR"
+
+printf '%s\n' "${UNINSTALLER_TEMPLATE[@]}" > "$INSTALL_DIR/uninstall.run"
+rm -f "$INSTALL_DIR/uninstaller_linux_x64.template"
+chmod +x "$INSTALL_DIR/uninstall.run"
+
+echo "Done"
+
+exit 0

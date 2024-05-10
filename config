@@ -1,0 +1,84 @@
+#!/bin/bash
+
+#Path where terminal is executing the script.
+TERMINAL_DIR=$(dirname .)
+
+#Relative TERMINAL_DIR path where is the current script.
+SCRIPT_DIR=$(dirname "$0")
+
+# Temp dir.
+TMP_DIR="$SCRIPT_DIR/tmp" 
+
+function atexit()
+{
+    cd $TERMINAL_DIR
+}
+
+trap atexit EXIT
+
+mkdir -p $TMP_DIR
+
+echo "DSPBoard SDK Installer configurator for Linux x64"
+echo ""
+
+echo 'Downloading "gcc arm none eabi 10.3-2021.10"'
+wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://developer.arm.com/-/media/Files/downloads/gnu-rm/10.3-2021.10/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2
+
+echo 'Uncompressing "gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2"'
+tar -xf "$TMP_DIR/gcc-arm-none-eabi-10.3-2021.10-x86_64-linux.tar.bz2" -C "$SCRIPT_DIR/gcc"
+cp -rf $SCRIPT_DIR/gcc/gcc-arm-none-eabi-10.3-2021.10/* $SCRIPT_DIR/gcc
+rm -r "$SCRIPT_DIR/gcc/gcc-arm-none-eabi-10.3-2021.10/"
+
+echo 'Downloading "STM32CubeF4 1.27.1"'
+wget -q --show-progress --limit-rate=0 -nc -P $TMP_DIR https://github.com/STMicroelectronics/STM32CubeF4/archive/refs/tags/v1.27.1.zip
+
+echo 'Uncompressing "STM32CubeF4-1.27.1.zip"'
+unzip -q "$TMP_DIR/v1.27.1.zip" -d "$SCRIPT_DIR/packs"
+cp -rf $SCRIPT_DIR/packs/STM32CubeF4-1.27.1/* $SCRIPT_DIR/packs/STM32CubeF4
+rm -r "$SCRIPT_DIR/packs/STM32CubeF4-1.27.1"
+
+echo 'Downloading "Powershell 7.4.2"'
+wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://github.com/PowerShell/PowerShell/releases/download/v7.4.2/powershell-7.4.2-linux-x64.tar.gz
+
+echo 'Uncompressing "powershell-7.4.2-linux-x64.tar.gz"'
+tar -xf "$TMP_DIR/powershell-7.4.2-linux-x64.tar.gz" -C "$SCRIPT_DIR/powershell"
+
+echo 'Downloading "Doxygen 1.10.0"'
+wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://www.doxygen.nl/files/doxygen-1.10.0.linux.bin.tar.gz
+
+echo 'Uncompressing "doxygen-1.10.0.linux.bin.tar.gz"'
+tar -xf "$TMP_DIR/doxygen-1.10.0.linux.bin.tar.gz" -C "$SCRIPT_DIR/doxygen"
+cp -rf $SCRIPT_DIR/doxygen/doxygen-1.10.0/* $SCRIPT_DIR/doxygen
+rm -r "$SCRIPT_DIR/doxygen/doxygen-1.10.0/"
+
+echo 'Downloading "VSCode 1.89.0 (April 2024)"'
+wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://update.code.visualstudio.com/1.89.0/linux-x64/stable
+cp -f $TMP_DIR/stable $TMP_DIR/code-stable-x64-1714529314.tar.gz
+
+echo 'Uncompressing "code-stable-x64-1714529314.tar.gz" & DSPBoard IDE settings'
+tar -xf "$TMP_DIR/code-stable-x64-1714529314.tar.gz" -C "$SCRIPT_DIR/vscode"
+cp -rf $SCRIPT_DIR/vscode/VSCode-linux-x64/* $SCRIPT_DIR/vscode
+rm -r "$SCRIPT_DIR/vscode/VSCode-linux-x64/"
+tar -xf "$SCRIPT_DIR/vscode/data.tar.gz" -C "$SCRIPT_DIR/vscode"
+
+echo 'Downloading "OpenOCD 12.0"'
+wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://sitsa.dl.sourceforge.net/project/openocd/openocd/0.12.0/openocd-0.12.0.tar.bz2
+
+echo 'Uncompressing "openocd-0.12.0.tar.bz2"'
+tar -xf "$TMP_DIR/openocd-0.12.0.tar.bz2" -C "$SCRIPT_DIR/utils/openocd"
+cp -rf $SCRIPT_DIR/utils/openocd/openocd-0.12.0/* $SCRIPT_DIR/utils/openocd
+rm -r "$SCRIPT_DIR/utils/openocd/openocd-0.12.0/"
+
+echo 'Configuring openocd"'
+cd "$SCRIPT_DIR/utils/openocd/"
+autoreconf --force --install
+bash "./configure" --enable-stlink --disable-asserts
+
+echo 'Building openocd (It can takes few minutes...)"'
+echo 'Wait up to build is done ...'
+sleep 5
+make
+echo 'Ok'
+
+exit
+

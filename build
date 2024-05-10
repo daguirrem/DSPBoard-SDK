@@ -1,0 +1,56 @@
+#!/bin/bash
+
+# David A. Aguirre M. <daguirre.m@outlook.com>
+# 07/05/2024
+
+# This script compress (as tar.bz2) all necesary folders and files to generates 
+# the DSPBoard SDK installer to linux x64 machines. The output is a single
+# .run file with execution permission (+x).
+
+# Note: To install the generated file run at terminal ./SETUP_NAME.run.
+# Note: NOT INSTALL WITH SUDO. 
+
+SETUP_NAME="dsp_board_sdk_linux_x64"
+SETUP_FILE="$SETUP_NAME.run"
+
+#Path where terminal is executing the script.
+TERMINAL_DIR=$(dirname .)
+
+#Relative TERMINAL_DIR path where is the current script.
+SCRIPT_DIR=$(dirname "$0")
+
+# Temp dir.
+TMP_DIR="$SCRIPT_DIR/tmp" 
+
+function atExit()
+{
+    cd $TERMINAL_DIR
+}
+
+trap atExit EXIT
+
+echo 'Building DSPBoard SDK Installer for Linux x64'
+echo ''
+
+echo 'Compressing SDK files'
+tar --exclude='./tmp' \
+    --exclude='./vscode/data.tar.gz' \
+    --exclude='./packs/STM32CubeF4/Documentation' \
+    --exclude='./packs/STM32CubeF4/_htmresc' \
+    --exclude='./packs/STM32CubeF4/Middlewares' \
+    --exclude='./packs/STM32CubeF4/Projects' \
+    --exclude='./packs/STM32CubeF4/Utilities' \
+    --exclude='./build' \
+    --exclude='./config' \
+    --exclude='./dependences' \
+    --exclude='./installer_linux_x64.template' \
+    --exclude='./*/.git' \
+    --exclude='./*.run' \
+    -cvjSf $TMP_DIR/setup $SCRIPT_DIR
+
+echo "Generating $SETUP_FILE"
+cp -f "$SCRIPT_DIR/installer_linux_x64.template" "$SCRIPT_DIR/$SETUP_FILE"
+cat $TMP_DIR/setup >> "$SCRIPT_DIR/$SETUP_FILE"
+chmod +x "$SCRIPT_DIR/$SETUP_FILE"
+
+exit 0

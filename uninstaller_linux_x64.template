@@ -1,0 +1,24 @@
+#!/bin/bash
+
+SCRIPT_DIR=$(dirname "$0")
+TERMINAL_DIR=$(dirname .)
+
+HOME_DIR=$(eval echo ~$SUDO_USER)
+INSTALL_DIR=
+
+function atexit()
+{
+    cd $TERMINAL_DIR
+}
+
+trap atexit EXIT
+
+echo "Unistalling DSPBoard SDK"
+rm -rf $INSTALL_DIR
+
+echo "Removing DSPBoardIDE Shortcut"
+rm -rf $HOME_DIR/.local/share/applications/dsp-board-ide.desktop
+echo ''
+
+echo "Done"
+exit 0
