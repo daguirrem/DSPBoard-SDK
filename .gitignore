@@ -1,3 +1,15 @@
 tmp/
 fonts/
 *.run
+doxygen/*
+!doxygen/.gitkeep
+gcc/*
+!gcc/.gitkeep
+packs/*
+!packs/.gitkeep
+powershell/*
+!powershell/.gitkeep
+utils/openocd/*
+!utils/openocd/.gitkeep
+vscode/*
+!vscode/data.tar.gz
