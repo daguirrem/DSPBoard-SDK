@@ -6,6 +6,26 @@ If you want **only install** the DSP Board SDK, please download the lastest vers
 
 **Note**: Only x86_64 cpu architecture is supported.
 
+# Important note
+
+Before all, this repository have LFS files, you need install LFS extension support to your machine:
+
+If you are running Linux (Debian based) just run:
+```bash
+sudo apt install git-lfs
+```
+
+Or **Windows** just download and install [Git LFS extension](https://git-lfs.com/) 
+
+To **clone** this repo run this:
+
+```bash
+git clone --recursive https://github.com/daguirrem/DSPBoard-SDK
+cd DSPBoard-SDK
+git lfs fetch --all
+git lfs checkout
+```
+
 # How to build?
 
 ## Windows
