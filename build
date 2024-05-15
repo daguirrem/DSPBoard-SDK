@@ -45,6 +45,8 @@ tar --exclude='./tmp' \
     --exclude='./dependences' \
     --exclude='./installer_linux_x64.template' \
     --exclude='./*/.git' \
+    --exclude='./.git' \
+    --exclude='./.git*' \
     --exclude='./*.run' \
     -cvjSf $TMP_DIR/setup $SCRIPT_DIR
 
