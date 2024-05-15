@@ -34,8 +34,7 @@ wget -q --show-progress --limit-rate=0 -nc -P $TMP_DIR https://github.com/STMicr
 
 echo 'Uncompressing "STM32CubeF4-1.27.1.zip"'
 unzip -q "$TMP_DIR/v1.27.1.zip" -d "$SCRIPT_DIR/packs"
-cp -rf $SCRIPT_DIR/packs/STM32CubeF4-1.27.1/* $SCRIPT_DIR/packs/STM32CubeF4
-rm -r "$SCRIPT_DIR/packs/STM32CubeF4-1.27.1"
+mv $SCRIPT_DIR/packs/STM32CubeF4-1.27.1 $SCRIPT_DIR/packs/STM32CubeF4
 
 echo 'Downloading "Powershell 7.4.2"'
 wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://github.com/PowerShell/PowerShell/releases/download/v7.4.2/powershell-7.4.2-linux-x64.tar.gz
