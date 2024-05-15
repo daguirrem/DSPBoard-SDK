@@ -71,6 +71,7 @@ rm -r "$SCRIPT_DIR/utils/openocd/openocd-0.12.0/"
 
 echo 'Configuring openocd"'
 cd "$SCRIPT_DIR/utils/openocd/"
+bash "./configure"
 autoreconf --force --install
 bash "./configure" --enable-stlink --disable-asserts
 
@@ -78,7 +79,7 @@ echo 'Building openocd (It can takes few minutes...)"'
 echo 'Wait up to build is done ...'
 sleep 5
 make
-echo 'Ok'
+echo 'DSPBoard SDK Installer is configured :). Now you can build it with ./build'
 
 exit
 
