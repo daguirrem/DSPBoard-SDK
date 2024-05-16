@@ -64,6 +64,7 @@ echo 'Downloading "OpenOCD 12.0"'
 wget -q --show-progress -nc --limit-rate=0 -P $TMP_DIR https://sitsa.dl.sourceforge.net/project/openocd/openocd/0.12.0/openocd-0.12.0.tar.bz2
 
 echo 'Uncompressing "openocd-0.12.0.tar.bz2"'
+mkdir -p "$SCRIPT_DIR/utils/openocd"
 tar -xf "$TMP_DIR/openocd-0.12.0.tar.bz2" -C "$SCRIPT_DIR/utils/openocd"
 cp -rf $SCRIPT_DIR/utils/openocd/openocd-0.12.0/* $SCRIPT_DIR/utils/openocd
 rm -r "$SCRIPT_DIR/utils/openocd/openocd-0.12.0/"
