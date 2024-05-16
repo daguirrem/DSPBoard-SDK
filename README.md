@@ -1,6 +1,6 @@
 # DSP Board SDK
 
-This repository have all necesary files, folders and scripts to build DSP Board SDK **installer** to Windows and Linux (Debian based) machines.
+This repository have all necesary files, folders and scripts to build DSP Board SDK **Installer** to Windows and Linux (Debian based) machines.
 
 If you want **only install** the DSP Board SDK, please download the lastest version from [Releases](https://github.com/daguirrem/DSPBoard-SDK/releases) and follow the [*How to install?*](#how-to-install) section. 
 
@@ -51,6 +51,9 @@ git lfs checkout
    - Xpack windows build tools 4.4-2
 
 4. Open build.iss file (With Inno setup) and compile the installer (CTRL+F9). This generates a installer called dsp_board_sdk_win_x64.exe at root of repository folder.
+    ```pwsh
+    & .\build.iss
+    ```
 
 ## Linux
 1. Give execution permisions to builder scripts.
@@ -102,6 +105,7 @@ git lfs checkout
 
 Just run the builded/downloaded installer (dsp_board_sdk_win_x64.exe) and follow the steps.
 
+(Optional): Download and install the lastest driver for st-link debugger from [STMicroelectronics web](https://www.st.com/en/development-tools/stsw-link009.html).
 ## Linux
 
 If you builded your DSPBoard SDK Installer from scratch just run at terminal:
@@ -116,3 +120,6 @@ Else if you dowloaded the installer from *Releases*, give execution permissions 
 chmod +x ./dsp_board_sdk_linux_x64.run
 ./dsp_board_sdk_linux_x64.run
 ```
+
+# License
+  _DSPBoard SDK_ is licensed by MIT License, more information on [LICENSE.md](LICENSE.md)
