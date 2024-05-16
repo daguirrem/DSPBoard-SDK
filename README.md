@@ -10,12 +10,12 @@ If you want **only install** the DSP Board SDK, please download the lastest vers
 
 Before all, this repository have LFS files, you need install LFS extension support to your machine:
 
-If you are running Linux (Debian based) just run:
+If you are running **Linux (Debian based)** just run:
 ```bash
-sudo apt install git-lfs
+sudo apt install git git-lfs -y
 ```
 
-Or **Windows** just download and install [Git LFS extension](https://git-lfs.com/) 
+Or **Windows** just download and install [Git](https://git-scm.com/download/win) and [Git LFS extension](https://git-lfs.com/) 
 
 To **clone** this repo run this:
 
@@ -29,7 +29,28 @@ git lfs checkout
 # How to build?
 
 ## Windows
-1. TODO
+1. Download and install [Inno Setup](https://jrsoftware.org/isdl.php)
+
+2. Open Windows PowerShell with unrestricted execution policy at repository path:
+    ```bash
+    powershell.exe -ExecutionPolicy Unrestricted
+    ```
+
+3. Configure the workspace downloading the tools from **trusted** (official) sources:
+
+    ```pwsh
+    .\config.ps1
+    ```
+   This script download the next tools:
+   - GCC ARM NONE EABI 10.3-2021.10
+   - STM32CubeF4 1.27.1
+   - Powershell 7.4.2
+   - Doxygen 1.10.0
+   - VSCode 1.89.0 (April 2024)
+   - OpenOCD 12.0
+   - Xpack windows build tools 4.4-2
+
+4. Open build.iss file (With Inno setup) and compile the installer (CTRL+F9). This generates a installer called dsp_board_sdk_win_x64.exe at root of repository folder.
 
 ## Linux
 1. Give execution permisions to builder scripts.
@@ -79,7 +100,7 @@ git lfs checkout
 
 ## Windows
 
-TODO
+Just run the builded/downloaded installer (dsp_board_sdk_win_x64.exe) and follow the steps.
 
 ## Linux
 
